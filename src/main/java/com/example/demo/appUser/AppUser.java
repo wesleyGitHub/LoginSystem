@@ -1,9 +1,6 @@
 package com.example.demo.appUser;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +9,7 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 
+@ToString
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -30,23 +28,21 @@ public class AppUser implements UserDetails {
             generator = "appuser_sequence"
     )
     private Long id;
-    private String username;
-    private String password;
-    private String name;
+    private String firstName;
+    private String lastName;
     private String email;
+    private String password;
     @Enumerated(EnumType.STRING)
     private AppUserRole appUserRole;
-    private Boolean locked;
-    private Boolean enabled;
+    private Boolean locked = false;
+    private Boolean enabled = false;
 
-    public AppUser(String username, String password, String name, String email, AppUserRole appUserRole, Boolean locked, Boolean enabled) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
+    public AppUser(String firstName, String lastName, String email, String password, AppUserRole appUserRole) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
+        this.password = password;
         this.appUserRole = appUserRole;
-        this.locked = locked;
-        this.enabled = enabled;
     }
 
     @Override
@@ -62,7 +58,7 @@ public class AppUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
