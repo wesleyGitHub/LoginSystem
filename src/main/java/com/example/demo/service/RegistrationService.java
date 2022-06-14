@@ -1,16 +1,17 @@
-package com.example.demo.registration;
+package com.example.demo.service;
 
 
-import com.example.demo.appUser.AppUser;
-import com.example.demo.appUser.AppUserRole;
-import com.example.demo.appUser.AppUserService;
-import com.example.demo.email.EmailSender;
-import com.example.demo.registration.token.ConfirmationToken;
-import com.example.demo.registration.token.ConfirmationTokenService;
+import com.example.demo.entity.AppUser;
+import com.example.demo.entity.Role;
+import com.example.demo.util.email.EmailSender;
+import com.example.demo.util.email.EmailValidator;
+import com.example.demo.entity.ConfirmationToken;
+import com.example.demo.util.request.RegistrationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +23,8 @@ public class RegistrationService {
 
     private final ConfirmationTokenService confirmationTokenService;
 
+    private final RoleService roleService;
+
     private final EmailSender emailSender;
 
     public String register(RegistrationRequest request) {
@@ -30,14 +33,12 @@ public class RegistrationService {
         if(!isValidEmail) {
             throw  new IllegalStateException("email not valid.");
         }
-
         String token =  appUserService.signUpUser(
                 new AppUser(
                         request.getFirstName(),
                         request.getLastName(),
                         request.getEmail(),
-                        request.getPassword(),
-                        AppUserRole.USER
+                        request.getPassword()
         ));
 
         String link = "http://localhost:8080/api/v1/registration/confirm?token=" + token;
@@ -68,6 +69,10 @@ public class RegistrationService {
         confirmationTokenService.setConfirmedAt(token);
 
         appUserService.enableAppUser(confirmationToken.getAppUser().getEmail());
+
+        roleService.addRoles(Arrays.asList(
+                new Role("USER", confirmationToken.getAppUser().getId())
+        ));
 
         return "confirmed";
     }

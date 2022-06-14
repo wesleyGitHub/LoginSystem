@@ -1,9 +1,11 @@
-package com.example.demo.registration;
+package com.example.demo.util.request;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -14,5 +16,6 @@ public class RegistrationRequest {
     private final String lastName;
     private final String email;
     private final String password;
+    private final List<String> roles;
 
 }

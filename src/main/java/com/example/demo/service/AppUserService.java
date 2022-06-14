@@ -1,7 +1,9 @@
-package com.example.demo.appUser;
+package com.example.demo.service;
 
-import com.example.demo.registration.token.ConfirmationToken;
-import com.example.demo.registration.token.ConfirmationTokenService;
+import com.example.demo.entity.AppUser;
+import com.example.demo.entity.ConfirmationToken;
+import com.example.demo.repository.AppUserRepository;
+import com.example.demo.service.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -57,7 +59,6 @@ public class AppUserService implements UserDetailsService {
         confirmationTokenService.saveConformationToken(
                 confirmationToken);
 
-        //todo:send email.
         return token;
     }
 

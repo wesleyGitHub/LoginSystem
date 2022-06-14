@@ -1,13 +1,12 @@
-package com.example.demo.email;
+package com.example.demo.service;
 
+import com.example.demo.util.email.EmailSender;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.crypto.codec.Utf8;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
