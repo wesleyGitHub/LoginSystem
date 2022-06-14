@@ -15,6 +15,7 @@ import java.util.Collections;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
+@Table(name = "APP_USER")
 public class AppUser implements UserDetails {
 
     @Id

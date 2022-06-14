@@ -60,4 +60,8 @@ public class AppUserService implements UserDetailsService {
         //todo:send email.
         return token;
     }
+
+    public void enableAppUser(String email) {
+        appUserRepository.enableAppUser(email);
+    }
 }
