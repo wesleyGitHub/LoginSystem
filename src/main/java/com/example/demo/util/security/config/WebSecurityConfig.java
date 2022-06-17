@@ -1,9 +1,12 @@
 package com.example.demo.util.security.config;
 
-import com.example.demo.service.AppUserService;
+import com.example.demo.service.UserService;
+import com.example.demo.service.impl.UserServiceImpl;
+import com.example.demo.util.filter.CustomAuthenticationFilter;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,19 +19,28 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final AppUserService appUserService;
+    private final UserServiceImpl userService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    //API符合以下路徑才允許訪問,否則回覆http403
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/api/v1/registration/**")
+                    .antMatchers("/api/v1/registration/**", "/api/**")
                     .permitAll()
                 .anyRequest()
-                .authenticated().and()
-                .formLogin();
+                .authenticated();
+//                .and()
+//                .formLogin();
+        //http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override
@@ -41,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         DaoAuthenticationProvider provider =
                 new DaoAuthenticationProvider();
         provider.setPasswordEncoder(bCryptPasswordEncoder);
-        provider.setUserDetailsService(appUserService);
+        provider.setUserDetailsService(userService);
         return provider;
     }
 }

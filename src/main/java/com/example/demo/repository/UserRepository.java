@@ -1,6 +1,6 @@
 package com.example.demo.repository;
 
-import com.example.demo.entity.AppUser;
+import com.example.demo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,11 +11,13 @@ import java.util.Optional;
 
 @Repository
 @Transactional(readOnly = true)
-public interface AppUserRepository extends JpaRepository<AppUser, Long> {
-    Optional<AppUser> findByEmail(String email);
+public interface UserRepository extends JpaRepository<User, Long> {
+    User findUserByEmail(String email);
+
+    Optional<User> findByEmail(String email);
     @Transactional
     @Modifying
-    @Query("UPDATE AppUser a " +
-        "SET a.enabled = TRUE WHERE a.email = ?1")
+    @Query("UPDATE User a " +
+            "SET a.enabled = TRUE WHERE a.email = ?1")
     void enableAppUser(String email);
 }

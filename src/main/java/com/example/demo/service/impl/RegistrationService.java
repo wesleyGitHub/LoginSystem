@@ -1,8 +1,7 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 
-import com.example.demo.entity.AppUser;
-import com.example.demo.entity.Role;
+import com.example.demo.entity.User;
 import com.example.demo.util.email.EmailSender;
 import com.example.demo.util.email.EmailValidator;
 import com.example.demo.entity.ConfirmationToken;
@@ -11,7 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @Service
 @AllArgsConstructor
@@ -19,11 +17,9 @@ public class RegistrationService {
 
     private final EmailValidator emailValidator;
 
-    private final AppUserService appUserService;
+    private final UserServiceImpl userServiceImpl;
 
     private final ConfirmationTokenService confirmationTokenService;
-
-    private final RoleService roleService;
 
     private final EmailSender emailSender;
 
@@ -33,8 +29,8 @@ public class RegistrationService {
         if(!isValidEmail) {
             throw  new IllegalStateException("email not valid.");
         }
-        String token =  appUserService.signUpUser(
-                new AppUser(
+        String token =  userServiceImpl.signUpUser(
+                new User(
                         request.getFirstName(),
                         request.getLastName(),
                         request.getEmail(),
@@ -68,11 +64,7 @@ public class RegistrationService {
 
         confirmationTokenService.setConfirmedAt(token);
 
-        appUserService.enableAppUser(confirmationToken.getAppUser().getEmail());
-
-        roleService.addRoles(Arrays.asList(
-                new Role("USER", confirmationToken.getAppUser().getId())
-        ));
+        userServiceImpl.enableUser(confirmationToken.getUser().getEmail());
 
         return "confirmed";
     }
