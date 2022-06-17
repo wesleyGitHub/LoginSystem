@@ -1,10 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.entity.AppUser;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,25 +8,21 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
+@Table(name = "APP_ROLE")
 public class Role {
+
     @Id
     @SequenceGenerator(
-            name = "role_sequence",
-            sequenceName = "role_sequence",
+            name = "app_role_sequence",
+            sequenceName = "app_role_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "role_sequence"
+            generator = "app_role_sequence"
     )
     private Long id;
     private String name;
-    private Long appUserId;
-
-    public Role(String roleName,
-                Long appUserId ) {
-        this.name = roleName;
-        this.appUserId = appUserId;
-    }
 }
