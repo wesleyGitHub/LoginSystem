@@ -28,8 +28,12 @@ spring:
           connection-timeout: 5000
           timeout: 3000
           write timeout: 5000
+  security:
+    user:
+      name: user
+      password: 1234
+
 server:
   error:
     include-message: always
   port: 8081
-

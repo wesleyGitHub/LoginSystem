@@ -8,16 +8,18 @@ import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Transactional
@@ -27,6 +29,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final static String USER_NOT_FOUND_MSG = "user with email : %s is not found";
     public final BCryptPasswordEncoder bCryptPasswordEncoder;
+    public final PasswordEncoder passwordEncoder;
     public final ConfirmationTokenService confirmationTokenService;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -34,6 +37,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User saveUser(User user) {
         log.info("saving new User {} to the database.", user.getLastName());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -69,9 +73,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
+        //方法1
+//        return userRepository.findByEmail(email)
+//                .orElseThrow(() ->
+//                        new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
+
+        //方法2
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            log.error("User not found in database.");
+            throw new UsernameNotFoundException("User not found in database.");
+        } else {
+            log.info("User found in database : {}" , user.getFirstName() + ", " + user.getLastName());
+        }
+
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles().forEach(role -> {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        });
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(), user.getPassword(), authorities);
+
     }
 
     public String signUpUser(User user) {
