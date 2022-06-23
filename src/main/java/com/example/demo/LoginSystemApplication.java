@@ -28,10 +28,10 @@ public class LoginSystemApplication {
 			userService.saveUser(new User("Peter", "lin", "peter.lin@gmail.com", "1234"));
 			userService.saveUser(new User("Judy", "Xe", "judy.xe@gmail.com", "1234"));
 
-			userService.addRoleToUser("john.chen@gmail.com", "ROLE_USER");
 
 			userService.addRoleToUser("john.chen@gmail.com", "ROLE_USER");
 			userService.addRoleToUser("john.chen@gmail.com", "ROLE_MANAGER");
+			userService.addRoleToUser("john.chen@gmail.com", "ROLE_ADMIN");
 			userService.addRoleToUser("andy.liu@gmail.com", "ROLE_MANAGER");
 			userService.addRoleToUser("peter.lin@gmail.com", "ROLE_ADMIN");
 			userService.addRoleToUser("judy.xe@gmail.com", "ROLE_USER");
